@@ -1,0 +1,595 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+/* ---------------------------------------------------------------------------
+   Marka: woda, tafla basenu, tor pływacki.
+   Baza to biel i błękit, kontrapunktem jest głęboki granat, akcentem — złoto.
+--------------------------------------------------------------------------- */
+:root {
+  /* Paleta marki */
+  --paper: oklch(1 0 0); /* #FFFFFF */
+  --mist: oklch(0.9738 0.0086 247.91); /* #F2F7FC */
+  --mist-deep: oklch(0.9483 0.0166 250.84); /* #E6EFF9 */
+  --hairline: oklch(0.9232 0.0202 250.39); /* #DCE7F3 */
+  --ink: oklch(0.1883 0.0288 253.67); /* #0A1420 */
+  --graphite: oklch(0.3962 0.0362 253.27); /* #39485A */
+  --slate: oklch(0.4643 0.0369 253.5); /* #526478 — tekst pomocniczy, 6.1:1 na bieli */
+  --navy: oklch(0.264 0.0678 255.34); /* #0B2545 */
+  --navy-deep: oklch(0.2008 0.0431 251.27); /* #061729 */
+  --azure: oklch(0.5432 0.1852 256.98); /* #0E6BD8 */
+  --azure-deep: oklch(0.475 0.168 258.03); /* #0B57B8 */
+  --azure-soft: oklch(0.7614 0.1043 251.38); /* #7FB6F2 */
+  --aqua: oklch(0.7483 0.1316 227.5); /* #35BDEE */
+  --gold: oklch(0.6446 0.1164 82.7); /* #B0862B — linie, ikony */
+  --gold-ink: oklch(0.5379 0.0983 82.5); /* #8A6A22 — złoto w tekście, 5:1 na bieli */
+  --gold-bright: oklch(0.8232 0.1299 89.83); /* #E6C158 — złoto na granacie */
+  --silver: oklch(0.7107 0.0351 256.79); /* #94A3B8 */
+  --bronze: oklch(0.618 0.1171 60.4); /* #B87333 */
+
+  /* Tokeny shadcn/ui */
+  --background: var(--paper);
+  --foreground: var(--ink);
+  --card: var(--paper);
+  --card-foreground: var(--ink);
+  --popover: var(--paper);
+  --popover-foreground: var(--ink);
+  --primary: var(--azure);
+  --primary-foreground: oklch(0.99 0.005 250);
+  --secondary: var(--mist);
+  --secondary-foreground: var(--navy);
+  --muted: var(--mist);
+  --muted-foreground: var(--slate);
+  --accent: var(--mist-deep);
+  --accent-foreground: var(--navy);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: var(--hairline);
+  --input: var(--hairline);
+  --ring: var(--azure);
+  --chart-1: var(--azure);
+  --chart-2: var(--aqua);
+  --chart-3: var(--navy);
+  --chart-4: var(--gold);
+  --chart-5: var(--silver);
+  --radius: 0.75rem;
+
+  --header-height: 4.5rem;
+}
+
+/* Sekcje na głębokiej wodzie — lokalne przemapowanie tokenów, dzięki czemu
+   komponenty shadcn działają w ciemnym wariancie bez nadpisywania klas. */
+.on-deep {
+  --background: var(--navy);
+  --foreground: oklch(0.965 0.012 250);
+  --card: oklch(1 0 0 / 6%);
+  --card-foreground: oklch(0.965 0.012 250);
+  --popover: var(--navy-deep);
+  --popover-foreground: oklch(0.965 0.012 250);
+  --primary: var(--paper);
+  --primary-foreground: var(--navy);
+  --secondary: oklch(1 0 0 / 10%);
+  --secondary-foreground: oklch(0.965 0.012 250);
+  --muted: oklch(1 0 0 / 8%);
+  --muted-foreground: oklch(0.8 0.035 252); /* #A9BDD6 — 8:1 na granacie */
+  --accent: oklch(1 0 0 / 12%);
+  --accent-foreground: oklch(0.98 0 0);
+  --border: oklch(1 0 0 / 14%);
+  --input: oklch(1 0 0 / 18%);
+  --ring: var(--aqua);
+  --gold-ink: var(--gold-bright);
+  color-scheme: dark;
+}
+
+@theme inline {
+  --font-sans: var(--font-inter);
+  --font-mono: var(--font-jetbrains);
+  --font-display: var(--font-archivo);
+  --font-heading: var(--font-archivo);
+
+  --color-paper: var(--paper);
+  --color-mist: var(--mist);
+  --color-mist-deep: var(--mist-deep);
+  --color-hairline: var(--hairline);
+  --color-ink: var(--ink);
+  --color-graphite: var(--graphite);
+  --color-slate: var(--slate);
+  --color-navy: var(--navy);
+  --color-navy-deep: var(--navy-deep);
+  --color-azure: var(--azure);
+  --color-azure-deep: var(--azure-deep);
+  --color-azure-soft: var(--azure-soft);
+  --color-aqua: var(--aqua);
+  --color-gold: var(--gold);
+  --color-gold-ink: var(--gold-ink);
+  --color-gold-bright: var(--gold-bright);
+  --color-silver: var(--silver);
+  --color-bronze: var(--bronze);
+
+  --color-sidebar-ring: var(--ring);
+  --color-sidebar-border: var(--border);
+  --color-sidebar-accent-foreground: var(--accent-foreground);
+  --color-sidebar-accent: var(--accent);
+  --color-sidebar-primary-foreground: var(--primary-foreground);
+  --color-sidebar-primary: var(--primary);
+  --color-sidebar-foreground: var(--foreground);
+  --color-sidebar: var(--muted);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --color-foreground: var(--foreground);
+  --color-background: var(--background);
+
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+
+  --animate-marquee: marquee 46s linear infinite;
+  --animate-drift: drift 22s ease-in-out infinite;
+  --animate-rise: rise 0.9s cubic-bezier(0.16, 1, 0.3, 1) both;
+
+  @keyframes marquee {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
+  @keyframes drift {
+    0%,
+    100% {
+      transform: translate3d(0, 0, 0) scale(1);
+    }
+    50% {
+      transform: translate3d(2%, -3%, 0) scale(1.06);
+    }
+  }
+  @keyframes rise {
+    from {
+      opacity: 0;
+      transform: translateY(18px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  html {
+    @apply font-sans;
+    scroll-behavior: smooth;
+    scroll-padding-top: calc(var(--header-height) + 1.5rem);
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "cv11", "ss01";
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    background: var(--azure);
+    color: white;
+  }
+
+  /* Czasy i wyniki zawsze na siatce monospace — czytają się jak tablica wyników. */
+  .time,
+  .tnum {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum";
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+@layer components {
+  /* Nagłówki ekspozycyjne — szeroki krój zmiennej osi `wdth`. */
+  .display {
+    font-family: var(--font-display);
+    font-stretch: 112%;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 0.92;
+    text-wrap: balance;
+  }
+
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+
+  /* Linie torów pływackich — delikatna, pionowa siatka tła. */
+  .lanes {
+    background-image: repeating-linear-gradient(
+      to right,
+      color-mix(in oklab, var(--azure) 8%, transparent) 0 1px,
+      transparent 1px 12.5%
+    );
+  }
+
+  /* Tafla wody: nakładające się poświaty zamiast płaskiego gradientu. */
+  .water {
+    background:
+      radial-gradient(
+        60% 55% at 12% 0%,
+        color-mix(in oklab, var(--aqua) 18%, transparent),
+        transparent 70%
+      ),
+      radial-gradient(
+        55% 50% at 95% 12%,
+        color-mix(in oklab, var(--azure) 14%, transparent),
+        transparent 68%
+      ),
+      radial-gradient(
+        70% 60% at 50% 110%,
+        color-mix(in oklab, var(--azure-soft) 20%, transparent),
+        transparent 70%
+      );
+  }
+
+  .water-deep {
+    background:
+      radial-gradient(
+        70% 60% at 80% -10%,
+        color-mix(in oklab, var(--aqua) 22%, transparent),
+        transparent 65%
+      ),
+      radial-gradient(
+        60% 55% at 5% 110%,
+        color-mix(in oklab, var(--azure) 40%, transparent),
+        transparent 70%
+      );
+  }
+
+  /* Ziarno — zdejmuje z gradientów cyfrową gładkość. */
+  .grain::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.035;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  .gold-rule {
+    background: linear-gradient(
+      to right,
+      transparent,
+      var(--gold) 20%,
+      var(--gold-bright) 50%,
+      var(--gold) 80%,
+      transparent
+    );
+  }
+
+  .edge-fade-x {
+    mask-image: linear-gradient(
+      to right,
+      transparent,
+      black 8%,
+      black 92%,
+      transparent
+    );
+  }
+}
+
+/* ===========================================================================
+   WARIANT B — /page-b
+   Osobna propozycja wizualna. Wszystko poniżej jest addytywne i zakresowane
+   klasą `.page-b`, więc nie wpływa na obecną wersję strony.
+   Język: szwajcarski brutalizm — papier w kolorze kości słoniowej, czarny tusz,
+   jeden elektryczny błękit, zero zaokrągleń, zero cieni, widoczna siatka.
+=========================================================================== */
+:root {
+  --paper-b: oklch(0.9457 0.0096 93.57); /* #EFEDE6 */
+  --paper-b-deep: oklch(0.9096 0.0125 91.53); /* #E4E1D8 */
+  --ink-b: oklch(0.15 0.0021 286.14); /* #0B0B0C */
+  --ink-b-soft: oklch(0.4084 0.0033 106.54); /* #4A4A48 — 7,6:1 na papierze */
+  --electric: oklch(0.4808 0.2935 266.25); /* #1B2BFF — 6,3:1 na papierze */
+  --electric-deep: oklch(0.3901 0.2437 265.74); /* #0E1BC4 */
+  --electric-soft: oklch(0.6 0.24 266); /* #6E7BFF — 5,6:1 na czerni */
+  --wash: oklch(0.9011 0.0426 279.68); /* #D8DCFB */
+  --amber-b: oklch(0.6939 0.1411 81.69); /* #C8920B — tylko dekoracyjnie */
+  --amber-b-ink: oklch(0.5459 0.1108 79.5); /* #8A6408 — 4,6:1 na papierze */
+  --line-b: oklch(0.8445 0.0154 94.23); /* #CFCCC1 */
+}
+
+@theme inline {
+  --color-paper-b: var(--paper-b);
+  --color-paper-b-deep: var(--paper-b-deep);
+  --color-ink-b: var(--ink-b);
+  --color-ink-b-soft: var(--ink-b-soft);
+  --color-electric: var(--electric);
+  --color-electric-deep: var(--electric-deep);
+  --color-electric-soft: var(--electric-soft);
+  --color-wash: var(--wash);
+  --color-amber-b: var(--amber-b);
+  --color-amber-b-ink: var(--amber-b-ink);
+  --color-line-b: var(--line-b);
+
+  --font-display-b: var(--font-anton);
+
+  --animate-marquee-b: marquee-b 32s linear infinite;
+  --animate-marquee-b-slow: marquee-b 60s linear infinite;
+
+  @keyframes marquee-b {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
+}
+
+/* Przemapowanie tokenów shadcn — komponenty przejmują język wariantu B. */
+.page-b {
+  --background: var(--paper-b);
+  --foreground: var(--ink-b);
+  --card: var(--paper-b);
+  --card-foreground: var(--ink-b);
+  --popover: var(--paper-b);
+  --popover-foreground: var(--ink-b);
+  --primary: var(--electric);
+  --primary-foreground: var(--paper-b);
+  --secondary: var(--paper-b-deep);
+  --secondary-foreground: var(--ink-b);
+  --muted: var(--paper-b-deep);
+  --muted-foreground: var(--ink-b-soft);
+  --accent: var(--wash);
+  --accent-foreground: var(--ink-b);
+  --border: var(--line-b);
+  --input: var(--line-b);
+  --ring: var(--electric);
+  --radius: 0rem;
+
+  --font-sans: var(--font-space);
+  --font-heading: var(--font-anton);
+  font-family: var(--font-sans);
+  background-color: var(--paper-b);
+  color: var(--ink-b);
+}
+
+/* Sekcje na czarnym tuszu. */
+.page-b .on-ink {
+  --background: var(--ink-b);
+  --foreground: var(--paper-b);
+  --card: oklch(1 0 0 / 6%);
+  --card-foreground: var(--paper-b);
+  --popover: var(--ink-b);
+  --popover-foreground: var(--paper-b);
+  --primary: var(--paper-b);
+  --primary-foreground: var(--ink-b);
+  --secondary: oklch(1 0 0 / 10%);
+  --secondary-foreground: var(--paper-b);
+  --muted: oklch(1 0 0 / 8%);
+  --muted-foreground: oklch(0.75 0.006 100); /* 9,7:1 na czerni */
+  --accent: oklch(1 0 0 / 12%);
+  --accent-foreground: var(--paper-b);
+  --border: oklch(1 0 0 / 18%);
+  --ring: var(--electric-soft);
+  color-scheme: dark;
+}
+
+@layer components {
+  /* Nagłówki plakatowe — wąski Anton, wersaliki, ciasny interlinia. */
+  .display-b {
+    font-family: var(--font-anton);
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: -0.01em;
+    line-height: 0.95; /* zapas na polskie znaki diakrytyczne przy ciasnym składzie */
+  }
+
+  /* Kontra dla pełnych liter — sam kontur.
+     Grubość w `em`, więc skaluje się razem ze stopniem pisma; kolor bierzemy
+     z tokena, bo `currentColor` byłby tu przezroczysty. */
+  .outline-b {
+    color: transparent;
+    -webkit-text-stroke-width: max(1.2px, 0.016em);
+    -webkit-text-stroke-color: var(--foreground);
+    paint-order: stroke fill;
+  }
+  @supports not (-webkit-text-stroke: 1px black) {
+    .outline-b {
+      color: inherit;
+    }
+  }
+
+  .mono-b {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+
+  /* Widoczna siatka kolumn — konstrukcja układu jako element graficzny. */
+  .grid-rules {
+    background-image: repeating-linear-gradient(
+      to right,
+      var(--line-b) 0 1px,
+      transparent 1px 25%
+    );
+  }
+  .page-b .on-ink .grid-rules {
+    background-image: repeating-linear-gradient(
+      to right,
+      oklch(1 0 0 / 14%) 0 1px,
+      transparent 1px 25%
+    );
+  }
+
+  /* Duotone: zdjęcia sprowadzone do jednego koloru, pełna barwa na hover. */
+  .duotone {
+    position: relative;
+    isolation: isolate;
+    background-color: var(--ink-b);
+  }
+  .duotone img {
+    filter: grayscale(1) contrast(1.06);
+    transition: filter 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .duotone::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: var(--electric);
+    mix-blend-mode: color;
+    opacity: 0.9;
+    transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+    pointer-events: none;
+  }
+  .group:hover .duotone img,
+  .group:focus-visible .duotone img {
+    filter: none;
+  }
+  .group:hover .duotone::after,
+  .group:focus-visible .duotone::after {
+    opacity: 0;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .duotone img,
+    .duotone::after {
+      transition: none;
+    }
+  }
+}
+
+/* ===========================================================================
+   WARIANT C — /page-c
+   Trzecia propozycja, zakresowana klasą `.page-c` — addytywna, bez wpływu
+   na warianty A i B.
+   Język: editorial minimalism — biel i światło, lekki serif (Fraunces)
+   w rolach plakatowych, spokojny grotesk (Manrope) w tekście, jeden
+   stonowany akcent głębokiej wody. Cisza zamiast efektów.
+=========================================================================== */
+:root {
+  --paper-c: #ffffff;
+  --paper-c-soft: #f6f5f1; /* ciepły papier na sekcje rytmizujące */
+  --ink-c: #191a1c; /* 17,4:1 na bieli */
+  --ink-c-soft: #5e6167; /* tekst pomocniczy — 6,2:1 na bieli, 5,7:1 na papierze */
+  --line-c: #e5e4de; /* włoskowate linie */
+  --accent-c: #14697c; /* głęboka woda — 6,3:1 na bieli, może nieść tekst */
+  --accent-c-deep: #0f5563; /* 8,4:1 — hover akcentu */
+  --wash-c: #edf2f1; /* ledwie zabarwione tło akcentowe */
+}
+
+@theme inline {
+  --color-paper-c: var(--paper-c);
+  --color-paper-c-soft: var(--paper-c-soft);
+  --color-ink-c: var(--ink-c);
+  --color-ink-c-soft: var(--ink-c-soft);
+  --color-line-c: var(--line-c);
+  --color-accent-c: var(--accent-c);
+  --color-accent-c-deep: var(--accent-c-deep);
+  --color-wash-c: var(--wash-c);
+}
+
+/* Przemapowanie tokenów shadcn — spójne ringi fokusa i obramowania. */
+.page-c {
+  --background: var(--paper-c);
+  --foreground: var(--ink-c);
+  --muted: var(--paper-c-soft);
+  --muted-foreground: var(--ink-c-soft);
+  --border: var(--line-c);
+  --input: var(--line-c);
+  --ring: var(--accent-c);
+  --primary: var(--ink-c);
+  --primary-foreground: var(--paper-c);
+  --accent: var(--wash-c);
+  --accent-foreground: var(--ink-c);
+
+  --font-sans: var(--font-manrope);
+  --font-heading: var(--font-fraunces);
+  font-family: var(--font-sans);
+  background-color: var(--paper-c);
+  color: var(--ink-c);
+}
+
+.page-c ::selection {
+  background: var(--ink-c);
+  color: var(--paper-c);
+}
+
+@layer components {
+  /* Rola plakatowa — lekki serif o dużym świetle wewnętrznym.
+     Kursywa (em) jest częścią języka: akcentuje pojedyncze słowa. */
+  .serif-c {
+    font-family: var(--font-fraunces);
+    font-weight: 350;
+    letter-spacing: -0.015em;
+    line-height: 1.04;
+    text-wrap: balance;
+  }
+  .serif-c em {
+    font-style: italic;
+    font-weight: 380;
+  }
+
+  /* Drobna etykieta — jedyny głośny zabieg typograficzny wariantu. */
+  .label-c {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+  }
+
+  /* Delikatne podkreślenie linków tekstowych. */
+  .uline-c {
+    text-decoration-line: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.3em;
+    text-decoration-color: color-mix(in oklab, currentColor 30%, transparent);
+    transition: text-decoration-color 0.25s ease;
+  }
+  .uline-c:hover,
+  .uline-c:focus-visible {
+    text-decoration-color: currentColor;
+  }
+}
