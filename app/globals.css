@@ -593,3 +593,388 @@
     text-decoration-color: currentColor;
   }
 }
+
+/* ===========================================================================
+   WARIANT D — /page-d
+   Język wizualny wariantu A (te same tokeny i kroje). Jedyny dodatek: kolor
+   wstążki medalu — granatowa na jasnym tle, jasna na granacie.
+=========================================================================== */
+.page-d {
+  --medal-ribbon: var(--navy);
+}
+.page-d .on-deep {
+  --medal-ribbon: oklch(0.93 0.018 250);
+}
+
+/* ===========================================================================
+   WARIANT E — /page-e
+   „Pływacki minimalizm": język wizualny A (paleta, kroje) na sztywnej,
+   dwunastokolumnowej siatce prezentacji. Klasy poniżej są addytywne.
+=========================================================================== */
+.page-e {
+  --medal-ribbon: var(--navy);
+}
+.page-e .on-deep {
+  --medal-ribbon: oklch(0.93 0.018 250);
+}
+
+@layer components {
+  /* Nagłówki rozdziałów — szeroki Archivo, ciaśniejszy tracking niż w A. */
+  .display-e {
+    font-family: var(--font-display);
+    font-stretch: 112%;
+    font-weight: 700;
+    letter-spacing: -0.035em;
+    line-height: 0.94;
+    text-wrap: balance;
+  }
+
+  /* Tablica wyników — monospace, cyfry tabelaryczne. */
+  .board-e {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum";
+    letter-spacing: -0.02em;
+  }
+
+  /* Lina torowa — rytm kropek jako linia rozdzielająca. */
+  .lane-rope {
+    height: 4px;
+    background-image: repeating-linear-gradient(
+      to right,
+      currentColor 0 10px,
+      transparent 10px 18px
+    );
+    opacity: 0.22;
+  }
+
+  /* Powierzchnia wody nad ciemnym rozdziałem — miękkie plamy światła. */
+  .water-e {
+    background:
+      radial-gradient(
+        50% 45% at 85% 0%,
+        color-mix(in oklab, var(--aqua) 26%, transparent),
+        transparent 70%
+      ),
+      radial-gradient(
+        55% 50% at 0% 100%,
+        color-mix(in oklab, var(--azure) 30%, transparent),
+        transparent 70%
+      );
+  }
+}
+
+/* ===========================================================================
+   WARIANT F — /page-f
+   „Fotofinisz": ciemna hala, światło na torze, tablica wyników. Własna paleta
+   (atrament, papier, elektryczna aqua, złoto medali), typografia na osi
+   szerokości Archivo (62 % — nazwisko i liczby, 125 % — zdania). Addytywne.
+=========================================================================== */
+:root {
+  --ink-f: #050a14; /* atrament — tło całej prezentacji */
+  --ink-f-2: #0a1424; /* o stopień jaśniejszy — panele */
+  --paper-f: #f3f1ea; /* papier — rozdział partnerstwa */
+  --paper-f-2: #e9e6dc;
+  --chalk-f: #eef3f8; /* tekst na atramencie */
+  --chalk-f-dim: rgba(238, 243, 248, 0.62);
+  --line-f: rgba(238, 243, 248, 0.12);
+  --aqua-f: #5ee1ff; /* akcent — elektryczna woda */
+  --aqua-f-deep: #35bdee;
+  --gold-f: #e6c158;
+}
+
+@theme inline {
+  --color-ink-f: var(--ink-f);
+  --color-ink-f-2: var(--ink-f-2);
+  --color-paper-f: var(--paper-f);
+  --color-paper-f-2: var(--paper-f-2);
+  --color-chalk-f: var(--chalk-f);
+  --color-aqua-f: var(--aqua-f);
+  --color-aqua-f-deep: var(--aqua-f-deep);
+  --color-gold-f: var(--gold-f);
+
+  --animate-marquee-f: marquee-f 38s linear infinite;
+  --animate-marquee-f-rev: marquee-f-rev 46s linear infinite;
+  --animate-cue-f: cue-f 2.2s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+
+  @keyframes marquee-f {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
+  @keyframes marquee-f-rev {
+    from {
+      transform: translateX(-50%);
+    }
+    to {
+      transform: translateX(0);
+    }
+  }
+  @keyframes cue-f {
+    0% {
+      transform: scaleY(0);
+      transform-origin: top;
+    }
+    45% {
+      transform: scaleY(1);
+      transform-origin: top;
+    }
+    55% {
+      transform: scaleY(1);
+      transform-origin: bottom;
+    }
+    100% {
+      transform: scaleY(0);
+      transform-origin: bottom;
+    }
+  }
+}
+
+/* Cała prezentacja na atramencie: tokeny shadcn przemapowane raz, u góry. */
+.page-f {
+  --background: var(--ink-f);
+  --foreground: var(--chalk-f);
+  --card: var(--ink-f-2);
+  --card-foreground: var(--chalk-f);
+  --popover: var(--ink-f-2);
+  --popover-foreground: var(--chalk-f);
+  --primary: var(--chalk-f);
+  --primary-foreground: var(--ink-f);
+  --secondary: rgba(238, 243, 248, 0.08);
+  --secondary-foreground: var(--chalk-f);
+  --muted: rgba(238, 243, 248, 0.06);
+  --muted-foreground: var(--chalk-f-dim);
+  --accent: rgba(238, 243, 248, 0.1);
+  --accent-foreground: var(--chalk-f);
+  --border: var(--line-f);
+  --input: rgba(238, 243, 248, 0.16);
+  --ring: var(--aqua-f);
+  --gold-ink: var(--gold-f);
+  --medal-ribbon: rgba(238, 243, 248, 0.92);
+  --header-height: 4.5rem;
+  background-color: var(--ink-f);
+  color: var(--chalk-f);
+  color-scheme: dark;
+}
+.page-f ::selection {
+  background: var(--aqua-f);
+  color: var(--ink-f);
+}
+
+/* Rozdział na papierze — jedyna jasna plansza prezentacji. */
+.page-f .paper-f {
+  --background: var(--paper-f);
+  --foreground: #0b0f16;
+  --card: var(--paper-f);
+  --card-foreground: #0b0f16;
+  --primary: #0b0f16;
+  --primary-foreground: var(--paper-f);
+  --secondary: var(--paper-f-2);
+  --secondary-foreground: #0b0f16;
+  --muted: var(--paper-f-2);
+  --muted-foreground: #5b6472;
+  --accent: var(--paper-f-2);
+  --accent-foreground: #0b0f16;
+  --border: rgba(11, 15, 22, 0.14);
+  --input: rgba(11, 15, 22, 0.14);
+  --ring: #0b0f16;
+  --gold-ink: #8a6a22;
+  --medal-ribbon: #0b0f16;
+  background-color: var(--paper-f);
+  color: #0b0f16;
+  color-scheme: light;
+}
+
+@layer components {
+  /* Nazwisko i liczby — ultraskondensowane wersaliki. */
+  .condensed-f {
+    font-family: var(--font-display);
+    font-stretch: 62%;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: -0.015em;
+    line-height: 0.84;
+  }
+  /* Zdania i nagłówki — szeroki krój, ciasny tracking. */
+  .wide-f {
+    font-family: var(--font-display);
+    font-stretch: 118%;
+    font-weight: 700;
+    letter-spacing: -0.035em;
+    line-height: 0.96;
+    text-wrap: balance;
+  }
+  /* Kontur — pusta litera, sam obrys w kolorze bieżącym. */
+  .outline-f {
+    color: transparent;
+    -webkit-text-stroke-width: max(1px, 0.012em);
+    -webkit-text-stroke-color: currentColor;
+    paint-order: stroke fill;
+  }
+  @supports not (-webkit-text-stroke: 1px black) {
+    .outline-f {
+      color: inherit;
+      opacity: 0.35;
+    }
+  }
+  /* Tablica — mono, tabelaryczne cyfry. */
+  .board-f {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum";
+    letter-spacing: -0.02em;
+  }
+  /* Etykieta techniczna. */
+  .tag-f {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+  }
+  /* Siatka torów w tle — pionowe linie na atramencie. */
+  .lanes-f {
+    background-image: repeating-linear-gradient(
+      to right,
+      var(--line-f) 0 1px,
+      transparent 1px calc(100% / 12)
+    );
+  }
+  /* Światło na wodzie — dwie plamy, bardzo delikatne. */
+  .glow-f {
+    background:
+      radial-gradient(
+        42% 38% at 78% 12%,
+        rgba(94, 225, 255, 0.16),
+        transparent 70%
+      ),
+      radial-gradient(
+        48% 42% at 8% 92%,
+        rgba(14, 107, 216, 0.22),
+        transparent 72%
+      );
+  }
+  /* Kursor własny — tylko przy precyzyjnym wskaźniku. */
+  @media (pointer: fine) {
+    .page-f [data-cursor] {
+      cursor: none;
+    }
+  }
+}
+
+/* ===========================================================================
+   WARIANT G — /page-g
+   Jasny odpowiednik F: papier, czerń tuszu, sygnałowa czerwień (czepek, barwy
+   reprezentacji), pale woda jako tło paneli. Typografia z F (condensed/wide),
+   jedna ciemna plansza (partnerstwo). Addytywne.
+=========================================================================== */
+:root {
+  --paper-g: #fbfbf9; /* papier — tło całej prezentacji */
+  --paper-g-2: #f2f2ee; /* panele */
+  --water-g: #eaf4fa; /* pale woda — akcentowe tła */
+  --ink-g: #0b0f16; /* czerń tuszu — tekst i ciemna plansza */
+  --ink-g-2: #151b26;
+  --ink-g-dim: rgba(11, 15, 22, 0.58);
+  --line-g: rgba(11, 15, 22, 0.12);
+  --red-g: #e5233a; /* sygnałowa czerwień — akcent, CTA */
+  --red-g-deep: #c31a2f;
+  --gold-g: #b8891f; /* złoto na papierze (czytelne w tekście) */
+}
+
+@theme inline {
+  --color-paper-g: var(--paper-g);
+  --color-paper-g-2: var(--paper-g-2);
+  --color-water-g: var(--water-g);
+  --color-ink-g: var(--ink-g);
+  --color-ink-g-2: var(--ink-g-2);
+  --color-red-g: var(--red-g);
+  --color-red-g-deep: var(--red-g-deep);
+  --color-gold-g: var(--gold-g);
+}
+
+.page-g {
+  --background: var(--paper-g);
+  --foreground: var(--ink-g);
+  --card: var(--paper-g);
+  --card-foreground: var(--ink-g);
+  --popover: var(--paper-g);
+  --popover-foreground: var(--ink-g);
+  --primary: var(--ink-g);
+  --primary-foreground: var(--paper-g);
+  --secondary: var(--paper-g-2);
+  --secondary-foreground: var(--ink-g);
+  --muted: var(--paper-g-2);
+  --muted-foreground: var(--ink-g-dim);
+  --accent: var(--water-g);
+  --accent-foreground: var(--ink-g);
+  --border: var(--line-g);
+  --input: var(--line-g);
+  --ring: var(--red-g);
+  --gold-ink: var(--gold-g);
+  --medal-ribbon: var(--ink-g);
+  --header-height: 4.5rem;
+  background-color: var(--paper-g);
+  color: var(--ink-g);
+  color-scheme: light;
+}
+.page-g ::selection {
+  background: var(--red-g);
+  color: var(--paper-g);
+}
+
+/* Ciemna plansza G — partnerstwo. */
+.page-g .ink-g {
+  --background: var(--ink-g);
+  --foreground: var(--paper-g);
+  --card: var(--ink-g-2);
+  --card-foreground: var(--paper-g);
+  --primary: var(--paper-g);
+  --primary-foreground: var(--ink-g);
+  --secondary: rgba(251, 251, 249, 0.08);
+  --secondary-foreground: var(--paper-g);
+  --muted: rgba(251, 251, 249, 0.06);
+  --muted-foreground: rgba(251, 251, 249, 0.62);
+  --accent: rgba(251, 251, 249, 0.1);
+  --accent-foreground: var(--paper-g);
+  --border: rgba(251, 251, 249, 0.14);
+  --input: rgba(251, 251, 249, 0.16);
+  --ring: var(--red-g);
+  --gold-ink: #e6c158;
+  --medal-ribbon: rgba(251, 251, 249, 0.92);
+  background-color: var(--ink-g);
+  color: var(--paper-g);
+  color-scheme: dark;
+}
+
+@layer components {
+  /* Siatka torów na papierze. */
+  .lanes-g {
+    background-image: repeating-linear-gradient(
+      to right,
+      var(--line-g) 0 1px,
+      transparent 1px calc(100% / 12)
+    );
+  }
+  /* Światło na wodzie w wersji jasnej — dwie pale plamy. */
+  .glow-g {
+    background:
+      radial-gradient(
+        42% 38% at 82% 8%,
+        rgba(53, 189, 238, 0.14),
+        transparent 70%
+      ),
+      radial-gradient(
+        48% 42% at 6% 96%,
+        rgba(229, 35, 58, 0.08),
+        transparent 72%
+      );
+  }
+  /* Kursor własny — jak w F. */
+  @media (pointer: fine) {
+    .page-g [data-cursor] {
+      cursor: none;
+    }
+  }
+}

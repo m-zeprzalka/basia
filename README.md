@@ -13,15 +13,16 @@ npm run typecheck  # TypeScript
 ## Struktura
 
 ```
-app/                 layout, strona główna, polityka prywatności, OG image, sitemap, robots
+app/                 layout, strona główna, warianty /page-b … /page-f, polityka, OG image, sitemap, robots
 assets/images/       zoptymalizowane zdjęcia (WebP) — importowane statycznie przez next/image
 assets/fonts/        pliki TTF wyłącznie na potrzeby generowania grafiki Open Graph
-basia/               oryginały zdjęć od klienta (źródło dla skryptu)
-components/site/     sekcje strony
+basia/               oryginały zdjęć od klienta (źródło dla skryptu; katalog poza git)
+scripts/             przygotowanie zasobów graficznych
+components/site/     sekcje strony głównej (wariant A)
+components/page-b/   wariant B · page-c/ C · page-d/ D · page-e/ E · page-f/ F („Fotofinisz")
 components/motion/   Reveal, CountUp, TimeCounter, ScrollProgress
 components/ui/       komponenty shadcn/ui (tylko realnie używane)
-data/                wszystkie treści i wyniki
-scripts/             przygotowanie zasobów graficznych
+data/                wszystkie treści i wyniki (data/page-d/, page-e/, page-f/ — treści wariantów D–F)
 ```
 
 ## Aktualizacja wyników
@@ -55,15 +56,123 @@ Po zmianie wyników zaktualizuj też pole `dataAsOf` w `data/site.ts` — data
 
 Dane kontaktowe (`contact` w `data/site.ts`) są już uzupełnione.
 
+## Wariant D — `/page-d` (prezentacja dla sponsora)
+
+Alternatywa zbudowana na języku wizualnym wariantu A (te same tokeny, kroje
+i komponenty pomocnicze), ale z jednym celem: doprowadzić sponsora do rozmowy
+o kontrakcie. Kolejność sekcji jak w pitch decku:
+
+Hero (Paryż 2026, trzy liczby) → 01 Dlaczego teraz (teza + profil) →
+02 Trajektoria (interaktywny wykres 2:17,03 → 2:12,45) → 03 Medale i rekordy
+(półka z medalami, zakładki po imprezach, tabele PZP zwinięte) → 04 Paryż 2026
+(ME seniorów — dwa finały sztafet) → 05 Galeria (2 kolumny na mobile, 8 + reszta
+po rozwinięciu) → 06 Współpraca (korzyści, formaty, horyzont) → 07 Kontakt.
+
+- Pliki: `app/page-d/`, `components/page-d/`, `data/page-d/` (`pitch.ts` — copy,
+  `paris.ts` — ME seniorów Paryż 2026 + Lublin 2025, `season-d.ts` — zakładki,
+  `gallery-d.ts` — galeria). Wyniki wspólne (rekordy, progresja, oś osiągnięć)
+  nadal pochodzą z `data/`.
+- Medale: komponent `Medal` (`components/page-d/primitives-d.tsx`) rysuje
+  krążek na wstążce z cyfrą 1/2/3 — wszędzie tam, gdzie wcześniej były numerki.
+  Lokaty bez medalu mają osobną formę (`PlaceMark`).
+- Mobile: strona jest o ok. 45% krótsza od wariantu A (ok. 11 700 px vs
+  22 600 px przy 390 px szerokości); pływający pasek CTA (`DockD`) znika, gdy
+  sekcja kontaktu jest na ekranie.
+- Terminologia: „mistrzostwa Europy **juniorów**", „mistrzostwa Polski
+  **seniorów**", „mistrzyni Europy juniorów", „seniorski rekord Polski".
+
+### Do potwierdzenia z klientem przed publikacją wariantu D
+
+1. **Brąz ME seniorów na basenie 25 m (Lublin, 02.12.2025, sztafeta 4×50 m
+   st. dowolnym, 1:35,75)** — wg profilu World Aquatics i relacji prasowych
+   Barbara płynęła w finale. Klientowski plik copy o tym medalu nie wspomina;
+   w wariancie D podnosi on licznik medali z 10 do 11.
+2. Czasy zmian Barbary w sztafetach w Paryżu (1:59,87 · 54,16 · 55,32) oraz
+   2:16,67 na 200 m st. zmiennym — jedno źródło (protokoły wyników).
+3. Wyniki 100 m i 200 m st. dowolnym w Paryżu — brak śladu startu; przyjęto,
+   że Barbara nie wystartowała indywidualnie w tych konkurencjach.
+4. Horyzont 2027 (MŚ seniorów, ME juniorów) — bez nazw miast do czasu
+   potwierdzenia.
+
+## Wariant E — `/page-e` (prezentacja multimedialna, wersja ostateczna)
+
+„Pływacki minimalizm": język wizualny A na sztywnej siatce prezentacji.
+Osiem rozdziałów jak osiem slajdów, boczna listwa rozdziałów na desktopie,
+bieżący rozdział w nagłówku, pływające CTA na mobile.
+
+00 Okładka (pełnoekranowe zdjęcie z Paryża, najazd + paralaksa, tablica
+wyników) → 01 Wynik (2:12,45 na całą ramę, tablica finału z medalami, dystans
+do rekordu) → 02 Trajektoria (wykres na 8 kolumnach + tablica startów) →
+03 Medale (ściana kart imprez ze zdjęciem/kadrem z nagrania i medalami; okno
+z wynikami i wideo PZP) → 04 Paryż 2026 (scrollytelling: przyklejona rama
+mediów zmienia kadr z czytanym blokiem; wywiad PZP po finale) → 05 Media
+(bento na 12 kolumnach, filtry z animowanym przepływem, lightbox, wideo
+w kafelku) → 06 Partnerstwo (argumenty z kadrami, formaty, horyzont-tor) →
+07 Kontakt (ze stopką).
+
+- **Siatka.** `components/page-e/frame-e.tsx`: `Frame` (rama 90 rem),
+  `Grid` (4 / 8 / 12 kolumn, rynna 1 / 1,5 / 2 rem), `Chapter`
+  + `ChapterHead` (numer i etykieta w lewym pasie 3 kolumn, tytuł w prawym).
+  Każdy blok leży na kolumnach — pełne krwawienie mają tylko warstwy tła.
+  Wysokość rzędu ściany mediów liczy się z jednostek `cqw`, dzięki czemu
+  kafelki 8/4/4 kolumn zawsze się domykają. Audyt wyrównania (skrypt
+  Playwright w sesji): 0 elementów poza siatką przy 390 / 768 / 1024 / 1440.
+- **Wideo.** `data/page-e/media.ts` — cztery publiczne nagrania z kanału PZP
+  na YouTube (zweryfikowane oEmbed 17.08.2026): wywiad po finale 4×200 dow.
+  w Paryżu, po złocie MP seniorów w Olsztynie, dwa po brązie ME 25 m
+  w Lublinie. Osadzenie przez `youtube-nocookie.com` dopiero po kliknięciu
+  (`components/page-e/video-e.tsx`); przed kliknięciem tylko miniatura
+  z `i.ytimg.com` (`images.remotePatterns` w `next.config.ts`).
+  Pełnego wyścigu z Monachium nie ma publicznie na YouTube (VOD za paywallem
+  European Aquatics TV).
+- **Dane.** `data/page-e/` (rozdziały, copy, media, ściana medali) + wspólne
+  `data/` oraz `data/page-d/paris.ts` (Paryż 2026, Lublin 2025) i
+  `data/page-d/season-d.ts`. Medale rysuje `Medal` z `components/page-d/`.
+- **Ruch.** Reveal przy przewijaniu, Ken Burns i paralaksa okładki,
+  paralaksa zdjęć (`ParallaxImageE`), rysowanie wykresu, animowany filtr
+  siatki (motion `layout`). Wszystko respektuje `prefers-reduced-motion`.
+
+## Wariant F — `/page-f` „Fotofinisz" (wersja autorska)
+
+Kinowa prezentacja o własnym języku: atrament (`#050A14`), papier, elektryczna
+aqua, złoto medali; typografia na osi szerokości Archivo — 62 % (nazwisko,
+liczby, wersaliki) kontra 118 % (zdania). Rozdziały jak ujęcia z transmisji:
+
+- **Intro-stoper** — czarny ekran, cyfry naliczają do 2:12,45, kurtyna idzie
+  w górę (raz na sesję, `sessionStorage`; „Pomiń"; brak przy reduced-motion).
+- **Okładka** — nazwisko na całą ramę literka po literce, pionowy kadr
+  odsłaniany kurtyną z linii, trzy „napisy z transmisji", konturowa taśma.
+- **01 Wynik** — 2:12,45 na całą ramę i **replay**: trzy wyścigi na jednym
+  torze (MŚJ 2025 · MEJ 2026 · seniorski rekord Polski) płyną własnymi
+  prędkościami i zamierają, gdy rekord dotyka ściany; **fotofinisz** powiększa
+  ostatnie 1,1 % dystansu, gdzie 0,32 s ma szerokość dłoni. Podium z medalami.
+- **02 Tor** — na desktopie rozdział przypięty: pionowe przewijanie przesuwa
+  tor w poziomie (pięć stacji + ściana 2:12,13, znacznik pływaczki stoi, tor
+  płynie pod nim); na mobile pionowa lista.
+- **03 Medale** — lista startowa; nad wierszem pływający kadr podąża za
+  kursorem, klik otwiera wyniki i nagrania PZP (okno z E); wiersz rekordów.
+- **04 Paryż** — kinowy kadr na cały ekran, przypięty, tytuł wjeżdża od dołu;
+  tablica sztafet, trzy kadry, wywiad PZP.
+- **05 Taśma** — pozioma wstęga zdjęć i wideo: przeciąganie myszą, palcem,
+  strzałki, pasek postępu; lightbox; wideo gra w kafelku.
+- **06 Partnerstwo** — jedyna jasna plansza (papier), argumenty 2×2, formaty,
+  horyzont-tor. **07 Kontakt** — jedno słowo, magnetyczny przycisk, stopka.
+- Warstwa: menu pełnoekranowe (wersaliki rozdziałów), kursor własny z etykietą
+  („Wyniki", „Odtwórz", „Powiększ", „Przeciągnij") tylko przy `pointer: fine`,
+  magnetyczne CTA. Wszystko respektuje `prefers-reduced-motion`.
+- Pliki: `app/page-f/`, `components/page-f/`, `data/page-f/copy.ts`; siatka
+  `Frame`/`Grid` z E, dane wspólne (D/E). Zero poziomego przewijania 320–1920.
+
 ## Zdjęcia
 
 Skrypt `scripts/prepare-images.mjs` kadruje oryginały z katalogu `basia/`
 (usuwa pasek Instagram Stories i wklejony w grafikę tekst), skaluje je i
 zapisuje jako WebP w `assets/images/`, a dodatkowo generuje JPEG pod grafikę
-Open Graph.
+Open Graph. Grafiki wynikowe PZP z Paryża 2026 są kadrowane do samej
+fotografii (bez tekstu „7. miejsce" i belki logotypów).
 
 ```bash
-node scripts/prepare-images.mjs
+npm run images
 ```
 
 Do galerii świadomie nie trafiły dwa prywatne zdjęcia (plaża, portret w

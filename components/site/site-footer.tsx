@@ -5,7 +5,12 @@ import { Container, BrandMark } from "@/components/site/primitives"
  * Stopka celowo minimalna i jasna — nie ma odciągać uwagi od sekcji
  * współpracy, która jest celem strony.
  */
-export function SiteFooter() {
+export function SiteFooter({
+  dataAsOf = site.dataAsOf,
+}: {
+  /** Warianty z nowszymi wynikami mogą podać własną datę stanu danych. */
+  dataAsOf?: string
+}) {
   return (
     <footer className="border-t border-border bg-background">
       <Container className="flex flex-col gap-6 py-10 sm:flex-row sm:items-center sm:justify-between">
@@ -18,7 +23,7 @@ export function SiteFooter() {
 
         <p className="text-xs text-muted-foreground">
           © {new Date().getFullYear()} {site.name} · Wyniki wg tabel PZP, stan
-          na {site.dataAsOf} ·{" "}
+          na {dataAsOf} ·{" "}
           <a
             href="/polityka-prywatnosci"
             className="underline-offset-4 transition-colors hover:text-foreground hover:underline"

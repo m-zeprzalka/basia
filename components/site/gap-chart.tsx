@@ -14,6 +14,8 @@ export function GapChart({
   record,
   barbara,
   difference,
+  heading = "Dystans do rekordu Polski seniorek",
+  footnote,
 }: {
   record: {
     label: string
@@ -24,6 +26,10 @@ export function GapChart({
   }
   barbara: { label: string; time: string; seconds: number }
   difference: string
+  /** Nagłówek figury — warianty mogą użyć innej terminologii. */
+  heading?: string
+  /** Własna nota pod osią; domyślnie zdanie o erze kostiumów poliuretanowych. */
+  footnote?: React.ReactNode
 }) {
   const ref = React.useRef<HTMLElement>(null)
   const isInView = useInView(ref, { once: true, margin: "-80px" })
@@ -46,9 +52,7 @@ export function GapChart({
       className="rounded-3xl bg-white/6 p-6 ring-1 ring-white/12 backdrop-blur-sm sm:p-8"
     >
       <figcaption className="flex flex-col gap-1.5">
-        <span className="eyebrow text-muted-foreground">
-          Dystans do rekordu Polski seniorek
-        </span>
+        <span className="eyebrow text-muted-foreground">{heading}</span>
         <span className="text-lg font-medium">
           Dzieli je <span className="time text-gold-bright">{difference}</span>
         </span>
@@ -136,9 +140,13 @@ export function GapChart({
       </div>
 
       <p className="mt-6 border-t border-white/12 pt-5 text-sm leading-relaxed text-muted-foreground">
-        Rekord Polski seniorek — {record.time}, {record.holder} ·{" "}
-        {record.context} — powstał jeszcze w erze kostiumów poliuretanowych i
-        przetrwał do dziś.
+        {footnote ?? (
+          <>
+            Rekord Polski seniorek — {record.time}, {record.holder} ·{" "}
+            {record.context} — powstał jeszcze w erze kostiumów poliuretanowych
+            i przetrwał do dziś.
+          </>
+        )}
       </p>
     </figure>
   )

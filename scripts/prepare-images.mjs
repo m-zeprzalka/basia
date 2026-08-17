@@ -42,13 +42,65 @@ const IMAGES = [
     src: "d59e8eae-769f-4742-8b8e-0f9544e768e5.jpeg",
     out: "portret-basen-szeroki.webp",
   },
-  { src: "41b2ec16-cb49-4233-8af6-e466b38d399b.jpeg", out: "podium-zloto-skopje.webp" },
-  { src: "bb4af3ff-029a-490e-84e2-882fc0ed73dc.jpeg", out: "podium-srebro-skopje.webp" },
-  { src: "3f738814-0ed7-49c3-8291-7226353b62f9.jpeg", out: "srebrne-medale-skopje.webp" },
-  { src: "374e9c68-e18d-47b8-9730-0f091343a38b.jpeg", out: "po-wyscigu-czepek.webp" },
-  { src: "74125e51-db67-44be-9c96-c83f16cd774a.jpeg", out: "na-scianie-basenu.webp" },
-  { src: "5579891e-33d0-4fe7-92d9-6babd9ed1394.jpeg", out: "kciuk-w-gore.webp" },
-  { src: "6efe9020-0e1b-463b-8928-fb07ee4d22cc.jpeg", out: "zgrupowanie-cetniewo.webp" },
+  {
+    src: "41b2ec16-cb49-4233-8af6-e466b38d399b.jpeg",
+    out: "podium-zloto-skopje.webp",
+  },
+  {
+    src: "bb4af3ff-029a-490e-84e2-882fc0ed73dc.jpeg",
+    out: "podium-srebro-skopje.webp",
+  },
+  {
+    src: "3f738814-0ed7-49c3-8291-7226353b62f9.jpeg",
+    out: "srebrne-medale-skopje.webp",
+  },
+  {
+    src: "374e9c68-e18d-47b8-9730-0f091343a38b.jpeg",
+    out: "po-wyscigu-czepek.webp",
+  },
+  {
+    src: "74125e51-db67-44be-9c96-c83f16cd774a.jpeg",
+    out: "na-scianie-basenu.webp",
+  },
+  {
+    src: "5579891e-33d0-4fe7-92d9-6babd9ed1394.jpeg",
+    out: "kciuk-w-gore.webp",
+  },
+  {
+    src: "6efe9020-0e1b-463b-8928-fb07ee4d22cc.jpeg",
+    out: "zgrupowanie-cetniewo.webp",
+  },
+
+  // --- Mistrzostwa Europy seniorów, Paryż 2026 (dostarczone 17.08.2026) ---
+  // Przed startem — słuchawki, dres reprezentacji, ściana LED. Bez kadrowania.
+  {
+    src: "184e0aa9-aa6b-4a12-93d5-f5f2ebd7534e.jpeg",
+    out: "paryz-przed-startem.webp",
+  },
+  // Sztafeta kobiet w kręgu przed startem, w tle logotyp mistrzostw. Bez kadrowania.
+  {
+    src: "e8b197e6-6095-4401-9596-d1f7b2b0d88c.jpeg",
+    out: "paryz-sztafeta-razem.webp",
+  },
+  {
+    src: "0bde2314-145f-4288-9eb0-ba29635745cb.jpeg",
+    out: "paryz-sztafeta-mix.webp",
+    // 1638x2048 — grafika PZP: obcinamy logotyp mistrzostw u góry, tekst „8. miejsce"
+    // i belkę logotypów u dołu oraz zieloną krawędź z prawej
+    crop: { left: 0, top: 230, width: 1624, height: 1120 },
+  },
+  {
+    src: "8430ae0f-11a2-48f6-af96-5448aa61d105.jpeg",
+    out: "paryz-sztafeta-4x200.webp",
+    // 1638x2048 — jak wyżej: sama fotografia zespołu bez tekstu grafiki
+    crop: { left: 0, top: 270, width: 1624, height: 1090 },
+  },
+  {
+    src: "2dsaed.jpeg",
+    out: "paryz-skok-startowy.webp",
+    // 942x1652 — grafika PZP z eliminacji 4×100 m st. zmiennym: zostaje sam skok ze słupka
+    crop: { left: 0, top: 380, width: 942, height: 850 },
+  },
 ]
 
 async function main() {
@@ -71,18 +123,24 @@ async function main() {
       .webp({ quality: QUALITY, effort: 6 })
       .toFile(path.join(OUT, image.out))
 
-    report.push(`${image.out.padEnd(32)} ${info.width}x${info.height}  ${(info.size / 1024).toFixed(0)} kB`)
+    report.push(
+      `${image.out.padEnd(32)} ${info.width}x${info.height}  ${(info.size / 1024).toFixed(0)} kB`
+    )
   }
 
   // Wariant JPEG pod grafikę Open Graph — generator OG nie obsługuje WebP.
   const ogDir = path.resolve("assets/og")
   await mkdir(ogDir, { recursive: true })
-  const og = await sharp(path.join(SRC, "dace8494-3e65-410d-8243-c565555d77bd.jpeg"))
+  const og = await sharp(
+    path.join(SRC, "dace8494-3e65-410d-8243-c565555d77bd.jpeg")
+  )
     .extract({ left: 8, top: 6, width: 1616, height: 1394 })
     .resize({ width: 760, height: 950, fit: "cover", position: "top" })
     .jpeg({ quality: 82, mozjpeg: true })
     .toFile(path.join(ogDir, "monachium.jpg"))
-  report.push(`og/monachium.jpg${" ".repeat(17)}${og.width}x${og.height}  ${(og.size / 1024).toFixed(0)} kB`)
+  report.push(
+    `og/monachium.jpg${" ".repeat(17)}${og.width}x${og.height}  ${(og.size / 1024).toFixed(0)} kB`
+  )
 
   console.log(report.join("\n"))
 }

@@ -26,8 +26,11 @@ export function Reveal({
   const reduceMotion = useReducedMotion()
   const MotionTag = motion[as]
 
+  // Stan „hidden" jest identyczny na serwerze i w przeglądarce (także przy
+  // prefers-reduced-motion) — inaczej hydratacja zgłaszała różnicę transformu.
+  // Przy ograniczonym ruchu element i tak pojawia się natychmiast (duration 0).
   const variants: Variants = {
-    hidden: { opacity: 0, y: reduceMotion ? 0 : distance },
+    hidden: { opacity: 0, y: distance },
     visible: {
       opacity: 1,
       y: 0,
