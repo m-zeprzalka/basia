@@ -91,7 +91,9 @@ export function ParisI() {
   const interview = videoById("video-paryz-4x200")
 
   return (
-    <Chapter id="paryz" index={4} tone="deep" className="overflow-hidden">
+    // `overflow-x-clip`, nie `overflow-hidden`: przodek z overflow:hidden jest
+    // kontenerem przewijania i wyłącza position:sticky przyklejonej ramy.
+    <Chapter id="paryz" index={4} tone="deep" className="overflow-x-clip">
       <div
         className="water-e pointer-events-none absolute inset-0 opacity-70"
         aria-hidden="true"
