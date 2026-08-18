@@ -618,6 +618,22 @@
   --medal-ribbon: oklch(0.93 0.018 250);
 }
 
+/* Wariant H — wersja ostateczna na języku E: te same tokeny i klasy. */
+.page-h {
+  --medal-ribbon: var(--navy);
+}
+.page-h .on-deep {
+  --medal-ribbon: oklch(0.93 0.018 250);
+}
+
+/* Wariant I — finalny szlif H: te same tokeny i klasy. */
+.page-i {
+  --medal-ribbon: var(--navy);
+}
+.page-i .on-deep {
+  --medal-ribbon: oklch(0.93 0.018 250);
+}
+
 @layer components {
   /* Nagłówki rozdziałów — szeroki Archivo, ciaśniejszy tracking niż w A. */
   .display-e {

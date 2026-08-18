@@ -13,7 +13,9 @@ import sharp from "sharp"
 const SRC = path.resolve("basia")
 const OUT = path.resolve("assets/images")
 const MAX_WIDTH = 1800
-const QUALITY = 86
+/* Oryginały od klienta są już mocno skompresowane (80–110 kB JPEG) — wysoka
+   jakość WebP nie odzyska detalu, ale nie dokłada kolejnej warstwy artefaktów. */
+const QUALITY = 90
 
 /**
  * `crop` podajemy w pikselach oryginału. Kadry usuwają elementy obce dla strony
@@ -100,6 +102,29 @@ const IMAGES = [
     out: "paryz-skok-startowy.webp",
     // 942x1652 — grafika PZP z eliminacji 4×100 m st. zmiennym: zostaje sam skok ze słupka
     crop: { left: 0, top: 380, width: 942, height: 850 },
+  },
+
+  // --- Zdjęcia dostarczone 18.08.2026 (wariant H) ---
+  {
+    src: "596d3f36-f66c-4e7f-bb42-4bf58906db63.jpeg",
+    out: "portret-studio.webp",
+    // 1365x2048 — kadr kwadratowy: twarz i dłonie, bez napisu obcej marki na koszulce
+    crop: { left: 40, top: 90, width: 1285, height: 1270 },
+  },
+  {
+    src: "cc31b9ab-35ec-4622-b824-c4fd80ad86ea.jpeg",
+    out: "wroclaw-przed-startem.webp",
+    // Za słupkiem startowym toru 5 we Wrocławiu — bez kadrowania.
+  },
+
+  // --- Okładki nagrań z Facebooka (miniatury reelsów — fasada przed kliknięciem) ---
+  {
+    src: "reel-monachium-cover.jpeg",
+    out: "reel-monachium.webp",
+  },
+  {
+    src: "reel-bydgoszcz-cover.jpeg",
+    out: "reel-bydgoszcz.webp",
   },
 ]
 

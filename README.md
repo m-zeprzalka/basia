@@ -13,16 +13,16 @@ npm run typecheck  # TypeScript
 ## Struktura
 
 ```
-app/                 layout, strona główna, warianty /page-b … /page-f, polityka, OG image, sitemap, robots
+app/                 layout, strona główna, warianty /page-b … /page-h, polityka, OG image, sitemap, robots
 assets/images/       zoptymalizowane zdjęcia (WebP) — importowane statycznie przez next/image
 assets/fonts/        pliki TTF wyłącznie na potrzeby generowania grafiki Open Graph
-basia/               oryginały zdjęć od klienta (źródło dla skryptu; katalog poza git)
+basia/               oryginały zdjęć od klienta + pobrane okładki reelsów (źródło dla skryptu; katalog poza git)
 scripts/             przygotowanie zasobów graficznych
 components/site/     sekcje strony głównej (wariant A)
-components/page-b/   wariant B · page-c/ C · page-d/ D · page-e/ E · page-f/ F („Fotofinisz")
+components/page-b/   wariant B · page-c/ C · page-d/ D · page-e/ E · page-f/ F („Fotofinisz") · page-g/ G · page-h/ H (ostateczny)
 components/motion/   Reveal, CountUp, TimeCounter, ScrollProgress
 components/ui/       komponenty shadcn/ui (tylko realnie używane)
-data/                wszystkie treści i wyniki (data/page-d/, page-e/, page-f/ — treści wariantów D–F)
+data/                wszystkie treści i wyniki (data/page-d/ … page-h/ — treści wariantów D–H)
 ```
 
 ## Aktualizacja wyników
@@ -163,6 +163,91 @@ liczby, wersaliki) kontra 118 % (zdania). Rozdziały jak ujęcia z transmisji:
 - Pliki: `app/page-f/`, `components/page-f/`, `data/page-f/copy.ts`; siatka
   `Frame`/`Grid` z E, dane wspólne (D/E). Zero poziomego przewijania 320–1920.
 
+## Wariant H — `/page-h` (WERSJA OSTATECZNA)
+
+Wersja ostateczna zbudowana wprost na E (ta sama siatka `Frame`/`Grid`,
+te same rozdziały i tokeny) plus poprawki klienta z 18.08.2026. Rozdziały
+bez zmian (okładka, Paryż 2026, partnerstwo, nawigacja, listwa, dock)
+importowane są z `components/page-e/`; zmienione mają odpowiedniki
+w `components/page-h/`, a dane w `data/page-h/`.
+
+Różnice względem E:
+
+1. **Replay w rozdziale 01** (`replay-h.tsx`) — komponent „trzy wyścigi na
+   jednym torze" z wariantu F, przerysowany tokenami E i dopracowany na
+   mobile: etykiety strat (`+0,32 s`) mają stały odstęp 1,25 rem od kropek,
+   a fotofinisz rozdziela piętra — rekord nad linią, Barbara pod linią —
+   więc napisy nie nachodzą na siebie na żadnej szerokości. Fotofinisz
+   przejmuje rolę osi „dystans do rekordu" z E (bez duplikacji liczby 0,32 s).
+2. **Trajektoria** (`trajectory-h.tsx`) — pole wykresu ma szerokość tekstu
+   karty (wcięcia 12 px zamiast 24 px), wszystkie czasy jeden stopień pisma
+   (13 px; najlepszy tylko złoty i półgruby), a etykiety leżą po wolnej
+   stronie linii (środkowe nad linią z lewej, pierwszy pod linią z prawej) —
+   nic nie przecina wykresu.
+3. **Medale** (`medals-h.tsx`) — kadry z nagrań to miniatury
+   `maxresdefault` (1280×720, prawdziwe 16:9): kryją całą kartę bez czarnych
+   pasów wtopionych w stare `hqdefault`. Okno „Pełne tabele"
+   (`records-h.tsx`) rysuje medal przy rekordach ustanowionych w wyścigach
+   medalowych (pole `medal` w `data/records.ts`).
+4. **Media** (`media-h.tsx`, `data/page-h/media.ts`) — dwa nowe zdjęcia
+   (portret studyjny w kadrze bez obcej marki, Wrocław zza słupka), dwa
+   publiczne reelsy z Facebooka (Sportowy Fanatyk — po złocie Monachium,
+   pionowy kafel; Swimm PL — rekord w Bydgoszczy) osadzane przez
+   `facebook.com/plugins/video.php` dopiero po kliknięciu — plakatami są
+   pobrane okładki reelsów (lokalne WebP), więc przed interakcją zero
+   zapytań do Facebooka. Pod ścianą pas: artykuł Przeglądu Sportowego Onet
+   (24.12.2025, tylko link) i karta Instagrama. Pierwsze 8 kafelków domyka
+   pełne rzędy na mobile i desktopie.
+5. **Kontakt** (`contact-h.tsx`) — trzeci wiersz z Instagramem
+   (`@_lesniewskaa._`, profil publiczny — link, bo osadzenie profilu wymaga
+   skryptów Meta), zaktualizowana stopka ze źródłami nagrań.
+6. **Jakość zdjęć** — WebP generowane w jakości 90 (zamiast 86),
+   `next/image` z `quality={90}` dla dużych kadrów (`images.qualities`
+   w `next.config.ts`). Oryginały od klienta są mocno skompresowane, więc
+   pełnej ostrości nie da się odzyskać — ale strona nie dokłada już drugiej
+   warstwy kompresji.
+
+Osadzenia (YouTube `maxresdefault` i oEmbed, reelsy przez plugin wideo)
+zweryfikowane 18.08.2026. Wideo z Barbarą wskazane przez klienta
+(4xwNc5fnC_0, 6SCr58dm-oc, -rb_DXSbJX8) były już na ścianie E — bez duplikacji.
+
+## Wariant I — `/page-i` (FINALNY — wersja dla klienta)
+
+Finalny szlif projektowy H (18.08.2026). Zasada nienaruszalności:
+**komponenty `components/page-h/` pozostają nietknięte** — rozdziały bez
+zmian (trajektoria, medale, media, kontakt) strona I importuje wprost
+z `page-h/`, a `partnerstwo`, nawigację, listwę i dock z `page-e/`.
+Każdy rozdział ze zmianami ma nowy komponent w `components/page-i/`
+i ewentualne treści w `data/page-i/`.
+
+Zmiany względem H:
+
+1. **Fotofinisz jako rysunek techniczny** (`replay-i.tsx`) — zamiast
+   napisów pozycjonowanych absolutnie w pasie pomiaru: oś ostatnich 2,2 m,
+   znacznik zawodniczki, ściana i **klamra wymiarowa** z różnicą 0,32 s pod
+   odcinkiem, a czasy w **wyrównanej legendzie pod osią** (dwie kolumny od
+   `sm`, jedna na mobile). Twarde spacje w nagłówku pilnują czystego łamania.
+   Nic nie ma prawa na nic nachodzić na żadnej szerokości.
+2. **`StatList` / `StatValue`** (`stat-i.tsx`) — reużywalny system
+   statystyk: pionowa lista z włoskowatymi liniami i wspólną kolumną
+   wartości zamiast trzech ciasnych kolumn. Liczby naliczają się jak na
+   tablicy świetlnej (rozumieją czas pływacki `7:58,22`, ułamki `+1,65 s`
+   i liczby całkowite; kaskadowe opóźnienia; szanują reduced-motion; kolory
+   z tokenów — działa na bieli i na głębokiej wodzie). Użycia: fakty
+   rozdziału 01, „Paryż w liczbach", liczby przy fotofiniszu, tablica
+   okładki na desktopie.
+3. **Paryż bez rozmycia** (`paris-i.tsx`) — przyklejona rama zmieniona
+   z pionowej 4:5 na **poziomą 4:3 i o kolumnę szerszą**: wszystkie kadry
+   z Paryża są poziome, więc pionowa rama wymuszała mocne kadrowanie
+   i powiększanie ponad rozdzielczość źródła. Teraz zdjęcia są pomniejszane
+   (nigdy powiększane) i serwowane w `quality={90}`.
+4. **Okładka** (`cover-i.tsx`) — zdjęcie hero w `quality={90}`, liczby
+   tablicy wyników naliczają się po wejściu (tylko desktop; mobilna
+   taśma pozostaje statyczna).
+
+QA (Playwright, 390/768/1440, DPR 2): zero poziomego overflow, fotofinisz
+i StatList sprawdzone wizualnie na wszystkich trzech szerokościach.
+
 ## Zdjęcia
 
 Skrypt `scripts/prepare-images.mjs` kadruje oryginały z katalogu `basia/`
@@ -175,9 +260,12 @@ fotografii (bez tekstu „7. miejsce" i belki logotypów).
 npm run images
 ```
 
-Do galerii świadomie nie trafiły dwa prywatne zdjęcia (plaża, portret w
-koszulce obcej marki) — strona jest kierowana do sponsorów, a bohaterką jest
-osoba niepełnoletnia.
+Do galerii świadomie nie trafiło prywatne zdjęcie z plaży — strona jest
+kierowana do sponsorów, a bohaterką jest osoba niepełnoletnia. Portret
+studyjny (ponownie przysłany przez klienta 18.08.2026) wszedł do wariantu H
+w kadrze kwadratowym, uciętym nad napisem obcej marki na koszulce.
+W `basia/` leżą też pobrane okładki reelsów (`reel-*-cover.jpeg`) — służą
+wyłącznie jako plakaty osadzeń z Facebooka.
 
 ## Uwagi projektowe
 

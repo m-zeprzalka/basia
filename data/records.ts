@@ -10,6 +10,8 @@ export type RecordRow = {
   time: string
   venue: string
   date: string
+  /** Medal imprezy, jeśli rekord padł w wyścigu zakończonym medalem. */
+  medal?: "gold" | "silver" | "bronze"
 }
 
 export type AgeGroup = {
@@ -46,12 +48,16 @@ export const pools: Pool[] = [
             time: "55,06",
             venue: "Skopje",
             date: "24.07.2025",
+            // Srebro EYOF 2025 w tym wyścigu.
+            medal: "silver",
           },
           {
             event: "200 m stylem zmiennym",
             time: "2:14,82",
             venue: "Skopje",
             date: "25.07.2025",
+            // Złoto EYOF 2025 w tym wyścigu.
+            medal: "gold",
           },
         ],
         footnote:
@@ -77,12 +83,16 @@ export const pools: Pool[] = [
             time: "58,78",
             venue: "Monachium",
             date: "09.07.2026",
+            // Brąz mistrzostw Europy juniorów 2026 w tym wyścigu.
+            medal: "bronze",
           },
           {
             event: "200 m stylem zmiennym",
             time: "2:12,45",
             venue: "Monachium",
             date: "12.07.2026",
+            // Złoto mistrzostw Europy juniorów 2026 w tym wyścigu.
+            medal: "gold",
           },
         ],
         footnote:
@@ -108,6 +118,7 @@ export const pools: Pool[] = [
             time: "2:12,45",
             venue: "Monachium",
             date: "12.07.2026",
+            medal: "gold",
           },
         ],
       },
@@ -119,6 +130,7 @@ export const pools: Pool[] = [
             time: "2:12,45",
             venue: "Monachium",
             date: "12.07.2026",
+            medal: "gold",
           },
         ],
         footnote:
