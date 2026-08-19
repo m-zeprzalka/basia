@@ -634,6 +634,14 @@
   --medal-ribbon: oklch(0.93 0.018 250);
 }
 
+/* Strona główna (finalny układ I, wersje PL i EN) — te same tokeny i klasy. */
+.page-main {
+  --medal-ribbon: var(--navy);
+}
+.page-main .on-deep {
+  --medal-ribbon: oklch(0.93 0.018 250);
+}
+
 @layer components {
   /* Nagłówki rozdziałów — szeroki Archivo, ciaśniejszy tracking niż w A. */
   .display-e {

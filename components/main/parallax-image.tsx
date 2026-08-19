@@ -11,10 +11,10 @@ import { cn } from "@/lib/utils"
  * wyższy od ramy i przesuwa się wolniej niż strona. Przy `prefers-reduced-motion`
  * zostaje nieruchomy. Rama musi mieć własne proporcje (aspect-*) lub wysokość.
  *
- * Wersja I: domyślna jakość 90 — duże kadry nie dostają drugiej warstwy
- * kompresji z optymalizatora obrazów.
+ * Domyślna jakość 90 — duże kadry nie dostają drugiej warstwy kompresji
+ * z optymalizatora obrazów (oryginały są już stratne).
  */
-export function ParallaxImageI({
+export function ParallaxImage({
   src,
   alt,
   sizes,

@@ -4,40 +4,45 @@ import * as React from "react"
 import { PlayIcon, RotateCcwIcon } from "lucide-react"
 import { animate, motion, useInView, useReducedMotion } from "motion/react"
 
-import { replay } from "@/data/page-i/copy"
+import type { ReplayDict } from "@/data/main/types"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-import { StatValue } from "@/components/page-i/stat-i"
+import { StatValue } from "@/components/main/stat"
 
 const REPLAY_SECONDS = 4.4 // czas odtwarzania całego wyścigu (do mety rekordu)
 const ZOOM_FROM = 98.9 // fotofinisz pokazuje ostatnie 1,1 % dystansu
 
-function formatClock(seconds: number) {
+function formatClock(seconds: number, separator: string) {
   const centis = Math.round(seconds * 100)
   const minutes = Math.floor(centis / 6000)
   const secs = Math.floor((centis % 6000) / 100)
   const cents = centis % 100
-  return `${minutes}:${String(secs).padStart(2, "0")},${String(cents).padStart(2, "0")}`
+  return `${minutes}:${String(secs).padStart(2, "0")}${separator}${String(cents).padStart(2, "0")}`
 }
 
 /**
- * Replay: trzy wyścigi na jednym torze (MŚJ 2025, MEJ 2026, seniorski rekord
- * Polski) — gdyby wystartowały razem. Kropki płyną liniowo, każda ze swoją
- * prędkością, i zamierają w chwili, gdy rekord dotyka ściany.
+ * Wizualizacja: trzy wyścigi na jednym torze (MŚJ 2025, MEJ 2026, seniorski
+ * rekord Polski) — gdyby wystartowały razem. Kropki płyną liniowo, każda ze
+ * swoją prędkością, i zamierają w chwili, gdy rekord dotyka ściany.
  *
- * Fotofinisz w wersji I to rysunek techniczny pomiaru: oś ostatnich 2,2 m,
- * znacznik zawodniczki, ściana i klamra wymiarowa z różnicą 0,32 s pod
- * odcinkiem. Czasy nie wiszą w pasie pomiaru — leżą w wyrównanej legendzie
- * pod osią, więc na żadnej szerokości nic na nic nie nachodzi.
+ * Fotofinisz to rysunek techniczny pomiaru: oś ostatnich 2,2 m, znacznik
+ * zawodniczki, ściana i klamra wymiarowa z różnicą 0,32 s pod odcinkiem.
+ * Czasy nie wiszą w pasie pomiaru — leżą w wyrównanej legendzie pod osią.
  */
-export function ReplayI() {
-  const lanes = replay.lanes
+export function Replay({
+  t,
+  decimal,
+}: {
+  t: ReplayDict
+  decimal: "," | "."
+}) {
+  const lanes = t.lanes
   const fastest = Math.min(...lanes.map((lane) => lane.seconds))
   const finishAt = (seconds: number) => (fastest / seconds) * 100
   const zoomAt = (seconds: number) =>
     ((finishAt(seconds) - ZOOM_FROM) / (100 - ZOOM_FROM)) * 100
 
-  const barbara = lanes.find((lane) => "highlight" in lane && lane.highlight)!
+  const barbara = lanes.find((lane) => lane.highlight)!
   const barbaraZoom = zoomAt(barbara.seconds)
   const bracketMid = (barbaraZoom + 100) / 2
 
@@ -58,7 +63,8 @@ export function ReplayI() {
     if (reduceMotion) {
       const frame = window.requestAnimationFrame(() => {
         setPhase("finished")
-        if (clockRef.current) clockRef.current.textContent = formatClock(fastest)
+        if (clockRef.current)
+          clockRef.current.textContent = formatClock(fastest, decimal)
       })
       return () => window.cancelAnimationFrame(frame)
     }
@@ -71,12 +77,13 @@ export function ReplayI() {
           first = false
           setPhase("running")
         }
-        if (clockRef.current) clockRef.current.textContent = formatClock(value)
+        if (clockRef.current)
+          clockRef.current.textContent = formatClock(value, decimal)
       },
       onComplete: () => setPhase("finished"),
     })
     return () => controls.stop()
-  }, [started, run, reduceMotion, fastest])
+  }, [started, run, reduceMotion, fastest, decimal])
 
   const finished = phase === "finished"
 
@@ -87,9 +94,9 @@ export function ReplayI() {
     >
       <div className="flex flex-wrap items-end justify-between gap-x-8 gap-y-4">
         <div>
-          <p className="eyebrow text-aqua">{replay.heading}</p>
+          <p className="eyebrow text-aqua">{t.heading}</p>
           <p className="mt-2 max-w-[48ch] text-base text-white/80 sm:text-lg">
-            {replay.sub}
+            {t.sub}
           </p>
         </div>
         <div className="flex items-center gap-4">
@@ -97,7 +104,7 @@ export function ReplayI() {
             className="board-e text-2xl font-medium text-white sm:text-3xl"
             aria-live="off"
           >
-            <span ref={clockRef}>0:00,00</span>
+            <span ref={clockRef}>0:00{decimal}00</span>
           </span>
           <Button
             variant="outline"
@@ -111,12 +118,12 @@ export function ReplayI() {
             {finished ? (
               <>
                 <RotateCcwIcon data-icon="inline-start" />
-                {replay.again}
+                {t.again}
               </>
             ) : (
               <>
                 <PlayIcon data-icon="inline-start" />
-                {replay.play}
+                {t.play}
               </>
             )}
           </Button>
@@ -128,8 +135,8 @@ export function ReplayI() {
         {lanes.map((lane) => {
           const target = finishAt(lane.seconds)
           const gap = lane.seconds - fastest
-          const isRecord = "record" in lane && lane.record
-          const isBarbara = "highlight" in lane && lane.highlight
+          const isRecord = Boolean(lane.record)
+          const isBarbara = Boolean(lane.highlight)
           return (
             <li
               key={lane.key}
@@ -193,8 +200,8 @@ export function ReplayI() {
                   aria-hidden="true"
                 >
                   {gap === 0
-                    ? "ściana"
-                    : `+${gap.toFixed(2).replace(".", ",")} s`}
+                    ? t.wall
+                    : `+${gap.toFixed(2).replace(".", decimal)} s`}
                 </motion.span>
               </div>
               <p className="board-e col-start-2 text-right text-sm font-medium text-white sm:col-start-3 sm:text-base">
@@ -215,8 +222,8 @@ export function ReplayI() {
       >
         <div className="rounded-2xl border border-gold-bright/30 bg-navy-deep/70 p-5 sm:p-6">
           <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1">
-            <p className="eyebrow text-gold-bright">{replay.finish.heading}</p>
-            <p className="eyebrow text-white/45">{replay.finish.meta}</p>
+            <p className="eyebrow text-gold-bright">{t.finish.heading}</p>
+            <p className="eyebrow text-white/45">{t.finish.meta}</p>
           </div>
 
           {/* Pomiar: oś, znacznik zawodniczki, ściana i klamra wymiarowa. */}
@@ -244,13 +251,13 @@ export function ReplayI() {
               className="board-e absolute top-[45px] -translate-x-1/2 text-sm font-medium whitespace-nowrap text-gold-bright"
               style={{ left: `${bracketMid}%` }}
             >
-              {replay.finish.bracket}
+              {t.finish.bracket}
             </span>
           </div>
 
           {/* Legenda — wyrównane wiersze zamiast napisów w pasie pomiaru. */}
           <ul className="mt-5 grid gap-x-6 gap-y-2.5 border-t border-white/10 pt-4 sm:grid-cols-2">
-            {replay.finish.legend.map((entry) => {
+            {t.finish.legend.map((entry) => {
               const isRecord = entry.key === "record"
               return (
                 <li
@@ -286,15 +293,11 @@ export function ReplayI() {
               )
             })}
           </ul>
-
-          <p className="mt-4 text-sm leading-relaxed text-white/70">
-            {replay.finish.note}
-          </p>
         </div>
 
         {/* Dwie liczby, które zostają w głowie — naliczane po fotofiniszu. */}
         <div className="grid grid-cols-2 gap-6 lg:grid-cols-1">
-          {replay.stats.map((stat, index) => (
+          {t.stats.map((stat, index) => (
             <div key={stat.value}>
               <StatValue
                 value={stat.value}

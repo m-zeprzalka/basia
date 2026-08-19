@@ -3,22 +3,25 @@
 import * as React from "react"
 import { animate, useInView, useReducedMotion } from "motion/react"
 
+import type { StatItem } from "@/data/main/types"
 import { cn } from "@/lib/utils"
 
 /* ---------------------------------------------------------------------------
-   System statystyk wariantu I.
+   System statystyk strony głównej.
 
    StatValue — liczba naliczana jak na tablicy wyników. Rozumie trzy zapisy:
-     czas pływacki  „7:58,22"          (m:ss,cc — liczony na setnych),
-     ułamek         „+1,65 s" / „0,32 s" (przecinek dziesiętny, prefiks/sufiks),
-     liczba całkowita „14" / „17."     (prefiks/sufiks przechodzą bez zmian).
-   Przed animacją pokazuje wynik końcowy (zero skoków układu, działa bez JS);
-   przy `prefers-reduced-motion` nie animuje wcale.
+     czas pływacki  „7:58,22" / „7:58.22"  (m:ss,cc — liczony na setnych),
+     ułamek         „+1,65 s" / „0.32 s"   (przecinek lub kropka dziesiętna),
+     liczba całkowita „14" / „17." / „17th" (prefiks/sufiks bez zmian).
+   Separator dziesiętny odczytuje z wartości, więc PL (przecinek) i EN (kropka)
+   działają bez konfiguracji. Przed animacją pokazuje wynik końcowy (zero
+   skoków układu, działa bez JS); przy `prefers-reduced-motion` nie animuje.
 
-   StatList — pionowa lista statystyk z włoskowatymi liniami zamiast trzech
-   ciasnych kolumn: wartości w jednej szerokości kolumny (równy lewy brzeg
-   opisów), wjazd liczb kaskadą. Kolory z tokenów, więc ta sama lista działa
-   na bieli i na głębokiej wodzie (`.on-deep`).
+   StatList — pionowa lista statystyk z włoskowatymi liniami: wartości w jednej
+   szerokości kolumny (równy lewy brzeg opisów), liczba wyśrodkowana w pionie
+   względem CAŁEGO opisu (items-center — przy 2–3-liniowych opisach wersja
+   items-baseline sadzała liczbę przy pierwszej linii, poziomy się rozjeżdżały).
+   Kolory z tokenów, więc lista działa na bieli i na głębokiej wodzie.
 --------------------------------------------------------------------------- */
 
 type ParsedStat = {
@@ -26,30 +29,33 @@ type ParsedStat = {
   format: (value: number) => string
 }
 
-function formatSwimTime(value: number) {
+function formatSwimTime(value: number, separator: string) {
   const centis = Math.round(value * 100)
   const minutes = Math.floor(centis / 6000)
   const secs = Math.floor((centis % 6000) / 100)
   const cents = centis % 100
-  return `${minutes}:${String(secs).padStart(2, "0")},${String(cents).padStart(2, "0")}`
+  return `${minutes}:${String(secs).padStart(2, "0")}${separator}${String(cents).padStart(2, "0")}`
 }
 
 function parseStat(raw: string): ParsedStat | null {
-  const time = raw.match(/^(\d+):(\d\d),(\d\d)$/)
+  const time = raw.match(/^(\d+):(\d\d)([.,])(\d\d)$/)
   if (time) {
     const target =
-      Number(time[1]) * 60 + Number(time[2]) + Number(time[3]) / 100
-    return { target, format: formatSwimTime }
+      Number(time[1]) * 60 + Number(time[2]) + Number(time[4]) / 100
+    return { target, format: (value) => formatSwimTime(value, time[3]) }
   }
-  const parts = raw.match(/^([^0-9]*)(\d+(?:,\d+)?)([^0-9]*)$/)
+  const parts = raw.match(/^([^0-9]*)(\d+(?:[.,]\d+)?)([^0-9]*)$/)
   if (!parts) return null
   const [, prefix, digits, suffix] = parts
-  const decimals = digits.includes(",") ? digits.split(",")[1].length : 0
+  const separator = digits.includes(",") ? "," : "."
+  const decimals = digits.includes(separator)
+    ? digits.split(separator)[1].length
+    : 0
   const target = Number(digits.replace(",", "."))
   return {
     target,
     format: (value) =>
-      `${prefix}${value.toFixed(decimals).replace(".", ",")}${suffix}`,
+      `${prefix}${value.toFixed(decimals).replace(".", separator)}${suffix}`,
   }
 }
 
@@ -97,8 +103,6 @@ export function StatValue({
   )
 }
 
-export type StatItem = { value: string; label: string }
-
 export function StatList({
   items,
   className,
@@ -113,7 +117,7 @@ export function StatList({
       {items.map((item, index) => (
         <li
           key={item.label}
-          className="flex items-baseline gap-x-5 py-3.5 sm:gap-x-6"
+          className="flex items-center gap-x-5 py-3.5 sm:gap-x-6"
         >
           <StatValue
             value={item.value}

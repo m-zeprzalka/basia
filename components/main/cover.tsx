@@ -6,26 +6,27 @@ import { ArrowDownIcon, ArrowRightIcon } from "lucide-react"
 import { motion, useReducedMotion, useScroll, useTransform } from "motion/react"
 
 import przedStartem from "@/assets/images/paryz-przed-startem.webp"
-import { chapterCount } from "@/data/page-e/chapters"
-import { cover } from "@/data/page-e/copy"
+import type { CoverDict } from "@/data/main/types"
 import { ButtonLink } from "@/components/ui/button"
 import { PolishFlag } from "@/components/site/primitives"
 import { Chapter, Frame, Grid } from "@/components/page-e/frame-e"
-import { StatValue } from "@/components/page-i/stat-i"
+import { StatValue } from "@/components/main/stat"
 
 const ease = [0.16, 1, 0.3, 1] as const
 
 /**
  * Okładka. Pełnoekranowe zdjęcie z Paryża z powolnym najazdem (Ken Burns)
  * po wejściu i paralaksą przy przewijaniu; nazwisko na całą szerokość ramy,
- * pod spodem tablica wyników jak na hali. Wszystko poza zdjęciem leży na
- * siatce 12 kolumn.
- *
- * Wersja I: zdjęcie w jakości 90 (mniej artefaktów optymalizatora na
- * i tak stratnym źródle), a liczby tablicy na desktopie naliczają się
- * jak na tablicy świetlnej.
+ * pod spodem tablica wyników jak na hali (na desktopie liczby naliczają się
+ * jak na tablicy świetlnej). Wszystko poza zdjęciem leży na siatce 12 kolumn.
  */
-export function CoverI() {
+export function Cover({
+  t,
+  chapterCount,
+}: {
+  t: CoverDict
+  chapterCount: number
+}) {
   const ref = React.useRef<HTMLElement>(null)
   const reduceMotion = useReducedMotion()
   const { scrollYProgress } = useScroll({
@@ -87,7 +88,7 @@ export function CoverI() {
             >
               <p className="eyebrow flex items-center gap-3 text-white/80">
                 <PolishFlag />
-                {cover.kicker}
+                {t.kicker}
               </p>
               <p className="eyebrow hidden text-white/60 lg:block">
                 <span className="tnum">00</span>
@@ -103,10 +104,10 @@ export function CoverI() {
               className="display-e @container col-span-4 text-white sm:col-span-8 lg:col-span-12"
             >
               <span className="block text-[clamp(2.75rem,14.5cqw,12rem)]">
-                {cover.name[0]}
+                {t.name[0]}
               </span>
               <span className="block text-[clamp(2.75rem,14.5cqw,12rem)]">
-                {cover.name[1]}
+                {t.name[1]}
               </span>
             </motion.h1>
 
@@ -114,19 +115,15 @@ export function CoverI() {
               {...rise(0.34)}
               className="col-span-4 max-w-[46ch] text-base leading-relaxed text-white/85 sm:col-span-6 sm:text-lg lg:col-span-6 lg:text-xl"
             >
-              {cover.tagline}
+              {t.tagline}
             </motion.p>
 
             <motion.div
               {...rise(0.44)}
               className="col-span-4 flex flex-col gap-4 sm:col-span-8 sm:flex-row sm:items-center sm:gap-3 lg:col-span-6 lg:justify-end"
             >
-              <ButtonLink
-                size="2xl"
-                variant="gold"
-                href={cover.primaryCta.href}
-              >
-                {cover.primaryCta.label}
+              <ButtonLink size="2xl" variant="gold" href={t.primaryCta.href}>
+                {t.primaryCta.label}
                 <ArrowRightIcon data-icon="inline-end" />
               </ButtonLink>
               {/* Na mobile drugi przycisk jest linkiem — jeden ekran, jedna
@@ -134,17 +131,17 @@ export function CoverI() {
               <ButtonLink
                 size="2xl"
                 variant="outline"
-                href={cover.secondaryCta.href}
+                href={t.secondaryCta.href}
                 className="hidden border-white/35 bg-white/8 text-white backdrop-blur-sm hover:bg-white/16 hover:text-white sm:inline-flex"
               >
-                {cover.secondaryCta.label}
+                {t.secondaryCta.label}
                 <ArrowDownIcon data-icon="inline-end" />
               </ButtonLink>
               <a
-                href={cover.secondaryCta.href}
+                href={t.secondaryCta.href}
                 className="inline-flex items-center gap-2 self-start text-sm font-medium text-white/85 underline-offset-4 hover:underline sm:hidden"
               >
-                {cover.secondaryCta.label}
+                {t.secondaryCta.label}
                 <ArrowDownIcon className="size-4" aria-hidden="true" />
               </a>
             </motion.div>
@@ -153,15 +150,14 @@ export function CoverI() {
       </Frame>
 
       {/* Tablica wyników — pasek zamykający okładkę. Na desktopie pięć pól na
-          siatce (liczby naliczają się jak na tablicy świetlnej), na mniejszych
-          ekranach przewijana tablica. */}
+          siatce, na mniejszych ekranach przewijana tablica. */}
       <motion.div
         {...rise(0.6)}
         className="relative border-t border-white/15 bg-navy-deep/55 backdrop-blur-md"
       >
         <Frame className="hidden lg:block">
           <dl className="grid grid-cols-5 gap-x-8 py-6">
-            {cover.board.map((item, index) => (
+            {t.board.map((item, index) => (
               <div key={item.value} className="flex min-w-0 flex-col gap-1.5">
                 <dt className="sr-only">{item.label}</dt>
                 <dd className="board-e text-2xl font-medium text-white xl:text-[1.75rem]">
@@ -181,7 +177,7 @@ export function CoverI() {
         <div
           className="overflow-hidden py-4 lg:hidden"
           role="group"
-          aria-label="Najważniejsze liczby"
+          aria-label={t.boardAria}
         >
           <div className="edge-fade-x flex w-max motion-safe:animate-marquee">
             {[0, 1].map((copy) => (
@@ -190,7 +186,7 @@ export function CoverI() {
                 aria-hidden={copy === 1 ? "true" : undefined}
                 className="flex shrink-0 items-center gap-8 pr-8"
               >
-                {cover.board.map((item) => (
+                {t.board.map((item) => (
                   <li
                     key={item.value}
                     className="flex items-baseline gap-3 whitespace-nowrap"

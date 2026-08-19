@@ -7,12 +7,9 @@ import paryzSkok from "@/assets/images/paryz-skok-startowy.webp"
 import paryzSztafeta4x200 from "@/assets/images/paryz-sztafeta-4x200.webp"
 import paryzSztafetaMix from "@/assets/images/paryz-sztafeta-mix.webp"
 import paryzSztafetaRazem from "@/assets/images/paryz-sztafeta-razem.webp"
-import { paris as parisData } from "@/data/page-d/paris"
-import { paris } from "@/data/page-e/copy"
-import { videoById } from "@/data/page-h/media"
+import type { ParisDict, RelayRowData, VideoUiDict } from "@/data/main/types"
 import { cn } from "@/lib/utils"
 import { Reveal } from "@/components/motion/reveal"
-import { PlaceMark } from "@/components/page-d/primitives-d"
 import {
   Chapter,
   ChapterHead,
@@ -20,49 +17,37 @@ import {
   Grid,
   chapterPadding,
 } from "@/components/page-e/frame-e"
-import { VideoH } from "@/components/page-h/video-h"
-import { StatList } from "@/components/page-i/stat-i"
+import { PlaceMark } from "@/components/main/medal"
+import { StatList } from "@/components/main/stat"
+import { Video } from "@/components/main/video"
 
-type FrameKey = (typeof paris.frames)[number]["key"]
+type FrameKey = ParisDict["frames"][number]["key"]
 
-const frameImages: Record<
-  FrameKey,
-  { src: StaticImageData; alt: string; position: string }
-> = {
-  razem: {
-    src: paryzSztafetaRazem,
-    alt: "Polska sztafeta kobiet w kręgu przed startem na mistrzostwach Europy seniorów w Paryżu",
-    position: "45% 50%",
-  },
-  "4x200": {
-    src: paryzSztafeta4x200,
-    alt: "Justina Kozan, Zuzanna Famulok, Barbara Leśniewska i Aleksandra Knop po finale sztafety 4×200 m stylem dowolnym",
-    position: "50% 40%",
-  },
-  mix: {
-    src: paryzSztafetaMix,
-    alt: "Ksawery Masiuk, Jan Kałusowski, Zuzanna Famulok i Barbara Leśniewska przed finałem sztafety mieszanej 4×100 m stylem zmiennym",
-    position: "50% 35%",
-  },
-  skok: {
-    src: paryzSkok,
-    alt: "Barbara Leśniewska w locie tuż po skoku startowym podczas eliminacji sztafety 4×100 m stylem zmiennym",
-    position: "50% 45%",
-  },
-}
+/** Kadry przyklejonej ramy — obrazy i punkty kadrowania są wspólne dla języków. */
+const frameImages: Record<FrameKey, { src: StaticImageData; position: string }> =
+  {
+    razem: { src: paryzSztafetaRazem, position: "45% 50%" },
+    "4x200": { src: paryzSztafeta4x200, position: "50% 40%" },
+    mix: { src: paryzSztafetaMix, position: "50% 35%" },
+    skok: { src: paryzSkok, position: "50% 45%" },
+  }
 
 /**
  * 04 — Paryż 2026. Scrollytelling: na desktopie lewa kolumna to przyklejona
- * rama, w której zdjęcie zmienia się razem z czytanym blokiem (obserwator
- * przecięcia na blokach); na mobile każdy blok ma swoje zdjęcie nad tekstem.
- *
- * Wersja I: rama jest pozioma (4:3) i o kolumnę szersza — wszystkie kadry
- * z Paryża są poziome, więc pionowa rama z H/E wymuszała mocne kadrowanie
- * i powiększanie ponad rozdzielczość źródła (stąd rozmycie). Teraz zdjęcia
- * są pomniejszane, nie powiększane, i serwowane w jakości 90.
- * Fakty otwierające to pionowa lista z naliczanymi liczbami.
+ * rama pozioma (4:3, kadry z Paryża są poziome — zdjęcia pomniejszane zamiast
+ * powiększanych, q90), w której zdjęcie zmienia się razem z czytanym blokiem
+ * (obserwator przecięcia na blokach); na mobile każdy blok ma swoje zdjęcie
+ * nad tekstem. Fakty otwierające to pionowa lista z naliczanymi liczbami.
  */
-export function ParisI() {
+export function Paris({
+  id,
+  t,
+  videoUi,
+}: {
+  id: string
+  t: ParisDict
+  videoUi: VideoUiDict
+}) {
   const [active, setActive] = React.useState<FrameKey>("razem")
   const rootRef = React.useRef<HTMLDivElement>(null)
 
@@ -78,7 +63,8 @@ export function ParisI() {
           .filter((entry) => entry.isIntersecting)
           .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0]
         const key = visible?.target.getAttribute("data-frame") as
-          FrameKey | undefined
+          | FrameKey
+          | undefined
         if (key) setActive(key)
       },
       { rootMargin: "-35% 0px -45% 0px", threshold: [0, 0.2, 0.5, 1] }
@@ -87,13 +73,12 @@ export function ParisI() {
     return () => observer.disconnect()
   }, [])
 
-  const relays = parisData.relays
-  const interview = videoById("video-paryz-4x200")
+  const relays = t.relays
 
   return (
     // `overflow-x-clip`, nie `overflow-hidden`: przodek z overflow:hidden jest
     // kontenerem przewijania i wyłącza position:sticky przyklejonej ramy.
-    <Chapter id="paryz" index={4} tone="deep" className="overflow-x-clip">
+    <Chapter id={id} index={4} tone="deep" className="overflow-x-clip">
       <div
         className="water-e pointer-events-none absolute inset-0 opacity-70"
         aria-hidden="true"
@@ -102,9 +87,9 @@ export function ParisI() {
         <Reveal>
           <ChapterHead
             index={4}
-            label={paris.label}
-            title={paris.title}
-            lead={paris.intro}
+            label={t.label}
+            title={t.title}
+            lead={t.intro}
           />
         </Reveal>
 
@@ -112,7 +97,7 @@ export function ParisI() {
           {/* Przyklejona rama z mediami — tylko desktop. */}
           <div className="hidden lg:sticky lg:top-[calc(var(--header-height)+2rem)] lg:col-span-6 lg:block lg:self-start">
             <figure className="relative aspect-[4/3] overflow-hidden rounded-2xl bg-navy ring-1 ring-white/10">
-              {paris.frames.map((frame) => {
+              {t.frames.map((frame) => {
                 const image = frameImages[frame.key]
                 const isActive = frame.key === active
                 return (
@@ -128,7 +113,7 @@ export function ParisI() {
                   >
                     <Image
                       src={image.src}
-                      alt={image.alt}
+                      alt={frame.alt}
                       fill
                       sizes="45vw"
                       quality={90}
@@ -145,14 +130,14 @@ export function ParisI() {
               />
               <figcaption className="absolute inset-x-6 bottom-5 flex items-end justify-between gap-6">
                 <span className="text-sm leading-snug text-white/85">
-                  {paris.frames.find((frame) => frame.key === active)?.caption}
+                  {t.frames.find((frame) => frame.key === active)?.caption}
                 </span>
                 <span className="board-e shrink-0 text-xs text-white/60">
                   {String(
-                    paris.frames.findIndex((frame) => frame.key === active) + 1
+                    t.frames.findIndex((frame) => frame.key === active) + 1
                   ).padStart(2, "0")}
                   <span className="opacity-60"> / </span>
-                  {String(paris.frames.length).padStart(2, "0")}
+                  {String(t.frames.length).padStart(2, "0")}
                 </span>
               </figcaption>
             </figure>
@@ -164,30 +149,30 @@ export function ParisI() {
             className="col-span-4 flex flex-col gap-14 sm:col-span-8 lg:col-span-5 lg:col-start-8 lg:gap-24"
           >
             {/* 01 — wejście: fakty. */}
-            <Block frameKey="razem" caption={paris.frames[0].caption}>
-              <h3 className="eyebrow text-white/70">Paryż w liczbach</h3>
-              <StatList items={parisData.takeaways} className="mt-4" />
+            <Block t={t} frameKey="razem">
+              <h3 className="eyebrow text-white/70">{t.factsHeading}</h3>
+              <StatList items={t.takeaways} className="mt-4" />
             </Block>
 
             {/* 02 — 4×200 dowolnym. */}
-            <Block frameKey="4x200" caption={paris.frames[1].caption}>
-              <h3 className="eyebrow text-white/70">{paris.relaysHeading}</h3>
-              <RelayRow relay={relays[0]} />
+            <Block t={t} frameKey="4x200">
+              <h3 className="eyebrow text-white/70">{t.relaysHeading}</h3>
+              <RelayRow relay={relays[0]} splitPrefix={t.splitPrefix} />
             </Block>
 
             {/* 03 — sztafeta mieszana. */}
-            <Block frameKey="mix" caption={paris.frames[2].caption}>
-              <RelayRow relay={relays[1]} />
+            <Block t={t} frameKey="mix">
+              <RelayRow relay={relays[1]} splitPrefix={t.splitPrefix} />
             </Block>
 
             {/* 04 — 4×100 zmiennym + starty indywidualne. */}
-            <Block frameKey="skok" caption={paris.frames[3].caption}>
-              <RelayRow relay={relays[2]} />
+            <Block t={t} frameKey="skok">
+              <RelayRow relay={relays[2]} splitPrefix={t.splitPrefix} />
               <h3 className="eyebrow mt-10 text-white/70">
-                {paris.individualHeading}
+                {t.individualHeading}
               </h3>
               <ul className="mt-4 divide-y divide-white/12 border-y border-white/12">
-                {parisData.individual.map((start) => (
+                {t.individual.map((start) => (
                   <li
                     key={start.event}
                     className="flex items-baseline justify-between gap-4 py-3"
@@ -197,7 +182,7 @@ export function ParisI() {
                         {start.event}
                       </p>
                       <p className="mt-0.5 text-xs text-white/60">
-                        {start.place}. miejsce · {start.stage}
+                        {start.meta}
                       </p>
                     </div>
                     <p className="board-e text-lg font-medium text-white">
@@ -207,14 +192,14 @@ export function ParisI() {
                 ))}
               </ul>
               <p className="mt-4 text-sm leading-relaxed text-white/65">
-                {parisData.individualNote}
+                {t.individualNote}
               </p>
             </Block>
 
             {/* Głos Barbary — nagranie PZP po finale 4×200. */}
             <Reveal>
-              <h3 className="eyebrow text-white/70">Głos Barbary po finale</h3>
-              <VideoH video={interview} className="mt-4" />
+              <h3 className="eyebrow text-white/70">{t.voiceHeading}</h3>
+              <Video video={t.video} t={videoUi} className="mt-4" />
             </Reveal>
           </div>
         </Grid>
@@ -224,15 +209,16 @@ export function ParisI() {
 }
 
 function Block({
+  t,
   frameKey,
-  caption,
   children,
 }: {
+  t: ParisDict
   frameKey: FrameKey
-  caption: string
   children: React.ReactNode
 }) {
   const image = frameImages[frameKey]
+  const frame = t.frames.find((entry) => entry.key === frameKey)!
   return (
     <Reveal>
       <div data-frame={frameKey}>
@@ -240,7 +226,7 @@ function Block({
         <figure className="relative mb-6 aspect-[16/10] overflow-hidden rounded-2xl bg-navy ring-1 ring-white/10 lg:hidden">
           <Image
             src={image.src}
-            alt={image.alt}
+            alt={frame.alt}
             fill
             sizes="100vw"
             quality={90}
@@ -253,7 +239,7 @@ function Block({
             aria-hidden="true"
           />
           <figcaption className="absolute inset-x-4 bottom-4 text-xs leading-snug text-white/85">
-            {caption}
+            {frame.caption}
           </figcaption>
         </figure>
         {children}
@@ -262,12 +248,18 @@ function Block({
   )
 }
 
-function RelayRow({ relay }: { relay: (typeof parisData.relays)[number] }) {
+function RelayRow({
+  relay,
+  splitPrefix,
+}: {
+  relay: RelayRowData
+  splitPrefix: string
+}) {
   return (
     <div className="mt-4 grid grid-cols-[2.75rem_1fr] items-start gap-x-4 border-y border-white/12 py-5 sm:grid-cols-[3rem_1fr_auto] sm:gap-x-6">
       <PlaceMark
         place={relay.place}
-        stage={relay.stage}
+        label={relay.placeLabel}
         className={cn(
           "size-11",
           relay.highlight ? "text-white ring-white/60" : "text-white/70"
@@ -281,12 +273,12 @@ function RelayRow({ relay }: { relay: (typeof parisData.relays)[number] }) {
           <span
             className={cn(
               "eyebrow rounded-full px-2 py-0.5 text-[0.625rem]",
-              relay.stage === "finał"
+              relay.stageKey === "final"
                 ? "bg-gold-bright text-navy"
                 : "bg-white/12 text-white/80"
             )}
           >
-            {relay.stage}
+            {relay.stageLabel}
           </span>
         </p>
         <p className="mt-1.5 text-sm text-white/65">{relay.lineup}</p>
@@ -302,7 +294,7 @@ function RelayRow({ relay }: { relay: (typeof parisData.relays)[number] }) {
         </p>
         {relay.split ? (
           <p className="text-xs text-white/60">
-            zmiana Barbary{" "}
+            {splitPrefix}{" "}
             <span className="board-e font-medium text-white">
               {relay.split}
             </span>
