@@ -9,6 +9,18 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified: new Date(),
       changeFrequency: "monthly",
       priority: 1,
+      alternates: {
+        languages: { pl: site.url, en: `${site.url}/en` },
+      },
+    },
+    {
+      url: `${site.url}/en`,
+      lastModified: new Date(),
+      changeFrequency: "monthly",
+      priority: 0.9,
+      alternates: {
+        languages: { pl: site.url, en: `${site.url}/en` },
+      },
     },
     {
       url: `${site.url}/polityka-prywatnosci`,
