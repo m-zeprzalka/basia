@@ -8,6 +8,16 @@ const nextConfig: NextConfig = {
     // więc domyślne 75 dokładałoby drugą warstwę artefaktów.
     qualities: [75, 90],
   },
+  // Etap prezentacji dla sponsorów — nagłówek blokuje indeksowanie każdej
+  // odpowiedzi (także sitemap.xml i obrazków OG). Usunąć przed startem.
+  async headers() {
+    return [
+      {
+        source: "/:path*",
+        headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }],
+      },
+    ]
+  },
 }
 
 export default nextConfig

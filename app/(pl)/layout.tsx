@@ -47,10 +47,11 @@ export const metadata: Metadata = {
     description:
       "Oficjalna strona Barbary Leśniewskiej — mistrzyni Europy juniorów na 200 m st. zmiennym, multimedalistki i wielokrotnej rekordzistki Polski.",
   },
+  // Etap prezentacji dla sponsorów — przed startem przywrócić index/follow: true.
   robots: {
-    index: true,
-    follow: true,
-    googleBot: { index: true, follow: true, "max-image-preview": "large" },
+    index: false,
+    follow: false,
+    googleBot: { index: false, follow: false },
   },
   formatDetection: { telephone: false },
 }

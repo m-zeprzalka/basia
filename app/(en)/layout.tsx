@@ -46,10 +46,11 @@ export const metadata: Metadata = {
     description:
       "Official site of Barbara Leśniewska — European junior champion in the 200 m individual medley and multiple Polish record holder.",
   },
+  // Etap prezentacji dla sponsorów — przed startem przywrócić index/follow: true.
   robots: {
-    index: true,
-    follow: true,
-    googleBot: { index: true, follow: true, "max-image-preview": "large" },
+    index: false,
+    follow: false,
+    googleBot: { index: false, follow: false },
   },
   formatDetection: { telephone: false },
 }
